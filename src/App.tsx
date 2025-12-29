@@ -9,7 +9,7 @@ import {Congratulation} from "./components/Congratulation/Congratulation";
 
 type StagesType = 'gate' | 'quiz' | 'feedback' | 'congratulation';
 export const App = () => {
-  const [stage, setStage] = useState<StagesType>('feedback');
+  const [stage, setStage] = useState<StagesType>('gate');
     console.log(stage)
 
   const onNextStage = () => {

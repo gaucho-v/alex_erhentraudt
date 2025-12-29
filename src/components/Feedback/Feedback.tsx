@@ -1,26 +1,15 @@
 import React from 'react';
 import {
     Button,
-    TimePicker,
     DatePicker,
     Form,
     Input,
     Flex,
     Card,
     Typography,
-    InputNumber,
-    Mentions,
-    Segmented,
-    Select,
-    TreeSelect,
 } from 'antd';
 import './Feedback.css';
 import {postData} from "../../utils/postData";
-
-const formItemLayout = {
-
-};
-
 
 const TitleStyle = {
     margin: '0',
@@ -40,20 +29,20 @@ export const Feedback = ({ onNextStage }: { onNextStage: () => void }) => {
             bdate: values.bdate,
             btime: values.btime,
             feed: values.feed,
-        }).then((data) => {
-            console.log(data);
+        }).then(() => {
+            onNextStage();
         });
     }
 
     return (
         <Flex className={'Question_Container'}>
             <Card className="Question_Container_Card Feedback_Container_Card" style={{ paddingTop: 0, width: '100%' }}>
-                <Typography.Title level={2} style={{...TitleStyle, textAlign: 'center'}}>
-                    Какой-то важный сбор данных
+                <Typography.Title level={1} style={{...TitleStyle, textAlign: 'center'}}>
+                    Форма обратной связи
                 </Typography.Title>
 
                 <Form
-                    {...formItemLayout}
+                    requiredMark={false}
                     form={form}
                     onFinish={onFinish}
                     variant={variant || 'filled'}
@@ -108,7 +97,7 @@ export const Feedback = ({ onNextStage }: { onNextStage: () => void }) => {
 
                     <Form.Item label={null}>
                         <Button type="primary" htmlType="submit" style={{ marginTop: '16px', width: '100%' }}>
-                            Загадать желание
+                            <Typography.Title level={4} style={TitleStyle}>Загадать желание</Typography.Title>
                         </Button>
                     </Form.Item>
                 </Form>
