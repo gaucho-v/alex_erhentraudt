@@ -1,13 +1,81 @@
 body {
-  margin: 0;
-  font-family: -apple-system, BlinkMacSystemFont, 'Segoe UI', 'Roboto', 'Oxygen',
-    'Ubuntu', 'Cantarell', 'Fira Sans', 'Droid Sans', 'Helvetica Neue',
-    sans-serif;
-  -webkit-font-smoothing: antialiased;
-  -moz-osx-font-smoothing: grayscale;
+    background: linear-gradient(
+            135deg,
+            #0a0a14 0%,        /* Темная основа */
+            #151530 30%,       /* С фиолетовым подтоном */
+            #1a1a3e 60%,       /* Переход к синему */
+            #0f1730 100%       /* Темно-синий */
+    );
+    min-height: 100vh;
+    margin: 0;
+    color: #ffffff;
 }
 
-code {
-  font-family: source-code-pro, Menlo, Monaco, Consolas, 'Courier New',
-    monospace;
+:root {
+    /* Розово-красный - акцентный, действия, кнопки */
+    --primary-pink: #ff3264;
+    --primary-pink-light: #ff5c83;
+    --primary-pink-dark: #e6004c;
+
+    /* Аквамариновый - вторичный акцент, ссылки, иконки */
+    --primary-aqua: #00ffea;
+    --primary-aqua-light: #5dfff0;
+    --primary-aqua-dark: #00ccc1;
+}
+
+:root {
+    /* Темные тона (фон) - с розовым подтоном */
+    --dark-base: #0a0a14;
+    --dark-elevated: #151522;
+    --dark-surface: #1e1e2e;
+
+    /* Светлые тона (текст) - с голубым подтоном */
+    --light-text: #ffffff;
+    --light-secondary: #e0e0ff;
+    --light-muted: #a0a0c0;
+
+    /* Серые с холодным подтоном */
+    --gray-100: #f8f8ff;
+    --gray-200: #e6e6f0;
+    --gray-300: #d0d0e0;
+    --gray-400: #a0a0b8;
+    --gray-500: #707090;
+    --gray-600: #505068;
+    --gray-700: #303048;
+    --gray-800: #202034;
+    --gray-900: #101020;
+}
+
+:root {
+    /* Фиолетовый - переход между розовым и голубым */
+    --purple-accent: #9d4edd;
+    --purple-light: #c77dff;
+    --purple-dark: #7b2cbf;
+
+    /* Желтый - для предупреждений, выделения */
+    --yellow-accent: #ffd166;
+    --yellow-light: #ffe5a0;
+    --yellow-dark: #e6b850;
+
+    /* Зеленый - успех, подтверждение */
+    --green-accent: #06d6a0;
+    --green-light: #4dfcc6;
+    --green-dark: #00b386;
+}
+
+:root {
+    /* Фоны */
+    --bg-primary: var(--dark-base);          /* Основной фон */
+    --bg-secondary: var(--dark-surface);     /* Карточки, панели */
+    --bg-elevated: var(--dark-elevated);     /* Всплывающие элементы */
+
+    /* Текст */
+    --text-primary: var(--light-text);       /* Основной текст */
+    --text-secondary: var(--light-secondary);/* Вторичный текст */
+    --text-muted: var(--light-muted);        /* Неактивный текст */
+
+    /* Акценты */
+    --accent-primary: var(--primary-pink);   /* Основные кнопки */
+    --accent-secondary: var(--primary-aqua); /* Второстепенные действия */
+    --accent-hover: var(--primary-pink-light);/* Состояние hover */
 }

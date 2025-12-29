@@ -1,0 +1,9 @@
+{
+  "name": "name",
+  "date": 123,
+  "time": 555,
+  "location": "",
+  "telegramUsername": "",
+  "correctAnsList": [1,2,3],
+  "wrongAnsList": [4,5,6]
+}

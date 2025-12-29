@@ -1,0 +1,134 @@
+.Question_Container {
+    width: 100%;
+    margin: 0 auto;
+    margin-bottom: 36px;
+    z-index: 101;
+}
+
+.Question_Container_Card {
+    width: 100%;
+    background: rgba(20, 20, 35, 0.95);
+    border-radius: 24px;
+    padding: 16px;
+    position: relative;
+    z-index: 1;
+    backdrop-filter: blur(10px);
+    border: 2px solid rgba(255, 255, 255, 0.1);
+
+    /* Внутреннее свечение */
+    box-shadow:
+            inset 0 0 30px rgba(255, 50, 100, 0.1),
+            inset 0 0 60px rgba(0, 255, 234, 0.05),
+            0 20px 60px rgba(0, 0, 0, 0.5);
+}
+
+@media screen and (max-width: 600px) {
+    .Question_Container_Card > .ant-card-body {
+        padding-left: 0;
+        padding-right: 0;
+    }
+}
+
+.Question_Container_Card::before {
+    content: '';
+    position: absolute;
+    top: -4px;
+    left: -4px;
+    right: -4px;
+    bottom: -4px;
+    background: linear-gradient(
+            45deg,
+            #ff3264,    /* Красный - ответ A */
+            #ff5c83,    /* Светло-розовый */
+            #9d4edd,    /* Фиолетовый - ответ C */
+            #c77dff,    /* Светло-фиолетовый */
+            #00ffea,    /* Аква - ответ B */
+            #5dfff0,    /* Светло-аква */
+            #ffd166,    /* Желтый - ответ D */
+            #ffe5a0,    /* Светло-желтый */
+            #ff3264     /* Замыкаем круг */
+    );
+    background-size: 400% 400%;
+    border-radius: 28px; /* На 4px больше основного радиуса */
+    z-index: -1;
+    animation: gradientBorder 8s ease infinite;
+    filter: blur(2px);
+    opacity: 0.9;
+}
+
+.Question_Container_Card::after {
+    content: '';
+    position: absolute;
+    top: -2px;
+    left: -2px;
+    right: -2px;
+    bottom: -2px;
+    background: linear-gradient(
+            45deg,
+            transparent 30%,
+            rgba(255, 50, 100, 0.3) 50%,
+            rgba(0, 255, 234, 0.3) 70%,
+            transparent 90%
+    );
+    border-radius: 26px;
+    z-index: -1;
+    animation: shimmer 3s ease-in-out infinite;
+}
+
+/* Анимация градиента */
+@keyframes gradientBorder {
+    0% {
+        background-position: 0% 50%;
+    }
+    50% {
+        background-position: 100% 50%;
+    }
+    100% {
+        background-position: 0% 50%;
+    }
+}
+
+/* Анимация мерцания */
+@keyframes shimmer {
+    0%, 100% {
+        opacity: 0.5;
+    }
+    50% {
+        opacity: 0.8;
+    }
+}
+
+.Question_Container_Card_Text {
+    min-width: 60px;
+    margin: 0;
+    text-shadow: 0 2px 10px rgba(0, 0, 0, 0.7);
+    color: white !important;
+}
+
+.Question_Header {
+    display: flex;
+    flex-direction: row;
+    align-items: center;
+    justify-content: space-between;
+}
+
+.Question_Image {
+    background-repeat: no-repeat;
+    background-size: cover;
+    border-radius: 16px;
+    max-width: 600px;
+    height: 320px;
+}
+
+.Question_Image_Bird {
+    background-image: url("../../assets/blue-bird.PNG");
+}
+
+.Question_Image_Amnuam {
+    background-image: url("../../assets/amnuam.PNG");
+}
+
+.Question_Image_Bondrewd {
+    background-image: url("../../assets/bondrewd.webp");
+    height: 420px;
+}

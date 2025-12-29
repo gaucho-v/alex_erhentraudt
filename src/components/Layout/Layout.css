@@ -1,0 +1,9 @@
+.Layout_Container {
+    box-sizing: border-box;
+    display: flex;
+    flex-direction: column;
+    justify-content: center;
+    margin: 0 auto;
+    padding: 16px;
+    max-width: 800px;
+}

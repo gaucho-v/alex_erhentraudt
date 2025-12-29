@@ -1,0 +1,169 @@
+.main-title-container {
+    display: flex;
+    flex-direction: column;
+    justify-content: center;
+    align-items: center;
+    position: relative;
+    overflow: hidden;
+}
+
+.title-3d {
+    text-align: center;
+    position: relative;
+    z-index: 1;
+    padding: 40px;
+    border-radius: 20px;
+    transition: transform 0.1s ease-out;
+    cursor: pointer;
+}
+
+.title-line {
+    margin-bottom: 20px;
+    display: flex;
+    justify-content: center;
+    align-items: center;
+    gap: 20px;
+}
+
+.text-part {
+    font-size: 4.5rem;
+    font-weight: 900;
+    text-transform: uppercase;
+    letter-spacing: 5px;
+    display: inline-block;
+    position: relative;
+    line-height: 1.2;
+    transition: transform 0.3s ease;
+}
+
+.text-part:hover {
+    transform: translateY(-5px);
+}
+
+/* Розовый 3D эффект для NO SOJU */
+.pink-glow {
+    color: #ff3264;
+    text-shadow:
+        /* Основной объем - более толстые тени */
+            0px 0px 0 #ff0040,
+            1px 1px 0 #ff0040,
+            2px 2px 0 #ff0040,
+            3px 3px 0 #ff0040,
+            4px 4px 0 #ff0040,
+            5px 5px 0 #ff0040,
+            6px 6px 0 #ff0040,
+            7px 7px 0 #ff0040,
+            8px 8px 0 #ff0040,
+            9px 9px 0 #ff0040,
+            10px 10px 0 #ff0040,
+            11px 11px 0 #ff0040,
+            12px 12px 0 #ff0040,
+                /* Белый контур для лучшего выделения */
+            0 0 2px #ffffff,
+            0 0 4px #ffffff,
+                /* Усиленное свечение */
+            0 0 15px rgba(255, 0, 64, 0.8),
+            0 0 25px rgba(255, 0, 64, 0.6),
+            0 0 35px rgba(255, 0, 64, 0.4),
+            0 0 50px rgba(255, 0, 64, 0.2);
+
+    /* Увеличение толщины шрифта */
+    font-weight: 1000;
+    -webkit-text-stroke: 0.5px rgba(255, 255, 255, 0.5);
+
+    animation: pinkGlow 2s ease-in-out infinite alternate;
+}
+
+/* Голубой 3D эффект для NO CHILL QUIZ */
+.blue-glow {
+    color: #00ffea;
+    text-shadow:
+            1px 1px 0 #0088ff,
+            2px 2px 0 #0088ff,
+            3px 3px 0 #0088ff,
+            4px 4px 0 #0088ff,
+            5px 5px 0 #0088ff,
+            6px 6px 0 #0088ff,
+            7px 7px 0 #0088ff,
+            8px 8px 0 #0088ff,
+            9px 9px 0 #0088ff,
+            10px 10px 0 #0088ff,
+            0 0 10px rgba(0, 136, 255, 0.5),
+            0 0 20px rgba(0, 136, 255, 0.3),
+            0 0 30px rgba(0, 136, 255, 0.2);
+    animation: blueGlow 2s ease-in-out infinite alternate;
+}
+
+@keyframes pinkGlow {
+    from {
+        filter: drop-shadow(0 0 5px rgba(255, 50, 100, 0.5));
+    }
+    to {
+        filter: drop-shadow(0 0 20px rgba(255, 50, 100, 0.8));
+    }
+}
+
+@keyframes blueGlow {
+    from {
+        filter: drop-shadow(0 0 5px rgba(0, 255, 234, 0.5));
+    }
+    to {
+        filter: drop-shadow(0 0 20px rgba(0, 255, 234, 0.8));
+    }
+}
+
+.soju-icon {
+    font-size: 3rem;
+    animation: float 3s ease-in-out infinite;
+    filter: drop-shadow(2px 2px 5px rgba(255, 255, 255, 0.3));
+}
+
+@keyframes float {
+    0%, 100% {
+        transform: translateY(0);
+    }
+    50% {
+        transform: translateY(-10px);
+    }
+}
+
+
+/* Адаптивность */
+@media (max-width: 1024px) {
+    .text-part {
+        font-size: 3.5rem;
+        letter-spacing: 4px;
+    }
+
+    .soju-icon {
+        font-size: 2.5rem;
+    }
+}
+
+@media (max-width: 768px) {
+    .title-3d {
+        padding: 20px;
+    }
+
+    .text-part {
+        font-size: 2.5rem;
+        letter-spacing: 3px;
+    }
+
+    .title-line {
+        flex-direction: column;
+        gap: 10px;
+    }
+
+    .soju-icon {
+        font-size: 2rem;
+        margin: 10px 0;
+    }
+}
+
+@media (max-width: 480px) {
+    .text-part {
+        font-size: 1.8rem;
+        letter-spacing: 2px;
+    }
+}
