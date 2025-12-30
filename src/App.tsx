@@ -43,7 +43,7 @@ export const App = () => {
 
   return (
       <>
-          <Snowfall/>
+          <Snowfall isDisabled={stage === 'feedback'}/>
           <Layout>
               <MainTitle/>
               {Page[stage]}

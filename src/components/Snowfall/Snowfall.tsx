@@ -1,7 +1,7 @@
 import './Snowfall.css';
 
-export const Snowfall = () => {
+export const Snowfall = ({ isDisabled }: { isDisabled: boolean }) => {
     return (
-        <div className="snow"></div>
+        <div className={isDisabled ? "" : 'snow'}></div>
     );
 };
