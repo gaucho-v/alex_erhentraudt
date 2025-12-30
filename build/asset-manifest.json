@@ -1,19 +1,19 @@
 {
   "files": {
-    "main.css": "/static/css/main.daa80a9f.css",
-    "main.js": "/static/js/main.1f9724ad.js",
-    "static/media/blue-bird.PNG": "/static/media/blue-bird.b715a77a1d75bcbb6de9.PNG",
-    "static/media/bondrewd.webp": "/static/media/bondrewd.91012b746436cf8c2cb9.webp",
-    "static/media/amnuam.PNG": "/static/media/amnuam.91b406671df452e8adba.PNG",
-    "static/media/bugImage.PNG": "/static/media/bugImage.1c6083f6900aff98f15d.PNG",
-    "static/media/body-guard-closed.jpg": "/static/media/body-guard-closed.a538ea1ac1b60a149e1c.jpg",
-    "static/media/body-guard-open.jpg": "/static/media/body-guard-open.2632f07504877d348d54.jpg",
-    "index.html": "/index.html",
-    "main.daa80a9f.css.map": "/static/css/main.daa80a9f.css.map",
-    "main.1f9724ad.js.map": "/static/js/main.1f9724ad.js.map"
+    "main.css": "/alex_erhentraudt/static/css/main.5ead103a.css",
+    "main.js": "/alex_erhentraudt/static/js/main.1f9724ad.js",
+    "static/media/blue-bird.PNG": "/alex_erhentraudt/static/media/blue-bird.b715a77a1d75bcbb6de9.PNG",
+    "static/media/bondrewd.webp": "/alex_erhentraudt/static/media/bondrewd.91012b746436cf8c2cb9.webp",
+    "static/media/amnuam.PNG": "/alex_erhentraudt/static/media/amnuam.91b406671df452e8adba.PNG",
+    "static/media/bugImage.PNG": "/alex_erhentraudt/static/media/bugImage.1c6083f6900aff98f15d.PNG",
+    "static/media/body-guard-closed.jpg": "/alex_erhentraudt/static/media/body-guard-closed.a538ea1ac1b60a149e1c.jpg",
+    "static/media/body-guard-open.jpg": "/alex_erhentraudt/static/media/body-guard-open.2632f07504877d348d54.jpg",
+    "index.html": "/alex_erhentraudt/index.html",
+    "main.5ead103a.css.map": "/alex_erhentraudt/static/css/main.5ead103a.css.map",
+    "main.1f9724ad.js.map": "/alex_erhentraudt/static/js/main.1f9724ad.js.map"
   },
   "entrypoints": [
-    "static/css/main.daa80a9f.css",
+    "static/css/main.5ead103a.css",
     "static/js/main.1f9724ad.js"
   ]
 }
