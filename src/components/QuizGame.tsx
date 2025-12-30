@@ -4,7 +4,7 @@ import React, {useState} from "react";
 import {QUIZ_LIST} from "../constants/constants";
 
 export const QuizGame = ({ onNextStage, addAnswer }: { onNextStage: () => void, addAnswer: (ans: string) => void }) => {
-    const [stageId, setStateId] = useState(0);
+    const [stageId, setStateId] = useState(5);
     const currentQuizItem = QUIZ_LIST[stageId];
 
     const handleSubmit = () => {
