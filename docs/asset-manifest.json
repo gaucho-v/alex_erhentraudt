@@ -1,7 +1,7 @@
 {
   "files": {
-    "main.css": "/alex_erhentraudt/static/css/main.99cda760.css",
-    "main.js": "/alex_erhentraudt/static/js/main.3481182a.js",
+    "main.css": "/alex_erhentraudt/static/css/main.f994a333.css",
+    "main.js": "/alex_erhentraudt/static/js/main.5ab10696.js",
     "static/media/blue-bird.PNG": "/alex_erhentraudt/static/media/blue-bird.b715a77a1d75bcbb6de9.PNG",
     "static/media/bondrewd.webp": "/alex_erhentraudt/static/media/bondrewd.91012b746436cf8c2cb9.webp",
     "static/media/amnuam.PNG": "/alex_erhentraudt/static/media/amnuam.91b406671df452e8adba.PNG",
@@ -9,11 +9,11 @@
     "static/media/body-guard-closed.jpg": "/alex_erhentraudt/static/media/body-guard-closed.a538ea1ac1b60a149e1c.jpg",
     "static/media/body-guard-open.jpg": "/alex_erhentraudt/static/media/body-guard-open.2632f07504877d348d54.jpg",
     "index.html": "/alex_erhentraudt/index.html",
-    "main.99cda760.css.map": "/alex_erhentraudt/static/css/main.99cda760.css.map",
-    "main.3481182a.js.map": "/alex_erhentraudt/static/js/main.3481182a.js.map"
+    "main.f994a333.css.map": "/alex_erhentraudt/static/css/main.f994a333.css.map",
+    "main.5ab10696.js.map": "/alex_erhentraudt/static/js/main.5ab10696.js.map"
   },
   "entrypoints": [
-    "static/css/main.99cda760.css",
-    "static/js/main.3481182a.js"
+    "static/css/main.f994a333.css",
+    "static/js/main.5ab10696.js"
   ]
 }

@@ -137,3 +137,23 @@
     touch-action: none;
     position: relative;
 }
+
+.scratch-canvas {
+    display: block;
+    max-width: 100%;
+    height: auto;
+}
+
+.canvas-wrapper {
+    position: relative;
+    overflow: hidden;
+    touch-action: none; /* Важно для предотвращения прокрутки */
+}
+
+/* Для мобильных устройств */
+@media (max-width: 768px) {
+    .scratch-canvas {
+        width: 100% !important;
+        height: auto !important;
+    }
+}

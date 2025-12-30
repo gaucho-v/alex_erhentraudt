@@ -1,12 +1,12 @@
 import React, { useRef, useEffect, useState, useCallback } from 'react';
 import './ImageScratchCanvas.css';
-import {Typography} from "antd";
+import { Typography } from "antd";
 
 interface ImageScratchCanvasProps {
     imageSrc?: string;
     width?: number;
     height?: number;
-    overlayColor?: string; // Цвет затемнения
+    overlayColor?: string;
 }
 
 const ImageScratchCanvas: React.FC<ImageScratchCanvasProps> = ({
@@ -16,10 +16,18 @@ const ImageScratchCanvas: React.FC<ImageScratchCanvasProps> = ({
                                                                    overlayColor = 'rgb(0,0,0)',
                                                                }) => {
     const canvasRef = useRef<HTMLCanvasElement>(null);
+    const containerRef = useRef<HTMLDivElement>(null);
     const imageRef = useRef<HTMLImageElement>(null);
     const [isDrawing, setIsDrawing] = useState(false);
-    const eraserSize = 1;
     const [isLoaded, setIsLoaded] = useState(false);
+    const eraserSize = 2;
+    const [devicePixelRatio, setDevicePixelRatio] = useState(1);
+
+    // Получаем реальный pixel ratio устройства
+    useEffect(() => {
+        const dpr = window.devicePixelRatio || 1;
+        setDevicePixelRatio(dpr);
+    }, []);
 
     // Инициализация изображения
     useEffect(() => {
@@ -36,7 +44,25 @@ const ImageScratchCanvas: React.FC<ImageScratchCanvasProps> = ({
         };
     }, [imageSrc]);
 
-    // Основная функция отрисовки
+    // Функция для получения точных координат
+    const getCoordinates = useCallback((clientX: number, clientY: number) => {
+        const canvas = canvasRef.current;
+        if (!canvas) return { x: 0, y: 0 };
+
+        const rect = canvas.getBoundingClientRect();
+
+        // Рассчитываем координаты с учетом масштаба canvas
+        const scaleX = canvas.width / rect.width;
+        const scaleY = canvas.height / rect.height;
+
+        // Для touch-устройств учитываем viewport offset
+        const x = (clientX - rect.left) * scaleX;
+        const y = (clientY - rect.top) * scaleY;
+
+        return { x, y };
+    }, []);
+
+    // Основная функция отрисовки с учетом DPR
     const drawCanvas = useCallback(() => {
         const canvas = canvasRef.current;
         const image = imageRef.current;
@@ -46,19 +72,26 @@ const ImageScratchCanvas: React.FC<ImageScratchCanvasProps> = ({
         const ctx = canvas.getContext('2d');
         if (!ctx) return;
 
-        // Устанавливаем размеры canvas
-        canvas.width = width;
-        canvas.height = height;
+        // Устанавливаем размеры canvas с учетом DPR
+        canvas.width = width * devicePixelRatio;
+        canvas.height = height * devicePixelRatio;
+
+        // Масштабируем canvas для CSS
+        canvas.style.width = `${width}px`;
+        canvas.style.height = `${height}px`;
+
+        // Масштабируем контекст для Retina-дисплеев
+        ctx.scale(devicePixelRatio, devicePixelRatio);
 
         // 1. Рисуем оригинальное изображение
         ctx.drawImage(image, 0, 0, width, height);
 
         // 2. Применяем серый фильтр поверх изображения
-        const imageData = ctx.getImageData(0, 0, width, height);
+        const imageData = ctx.getImageData(0, 0, width * devicePixelRatio, height * devicePixelRatio);
         const data = imageData.data;
 
         // Преобразуем в оттенки серого с прозрачностью
-        const [r, g, b] = [0, 0, 0];
+        const [r, g, b] = overlayColor.match(/\d+/g)?.map(Number) || [0, 0, 0];
         const overlayOpacity = 1;
 
         for (let i = 0; i < data.length; i += 4) {
@@ -73,7 +106,7 @@ const ImageScratchCanvas: React.FC<ImageScratchCanvasProps> = ({
         }
 
         ctx.putImageData(imageData, 0, 0);
-    }, [width, height, overlayColor]);
+    }, [width, height, overlayColor, devicePixelRatio]);
 
     // Функция для стирания
     const eraseAt = useCallback((x: number, y: number) => {
@@ -88,9 +121,12 @@ const ImageScratchCanvas: React.FC<ImageScratchCanvasProps> = ({
         // Сохраняем текущее состояние
         ctx.save();
 
+        // Адаптируем размер ластика под DPR
+        const scaledEraserSize = eraserSize * devicePixelRatio;
+
         // Создаем круглую область стирания
         ctx.beginPath();
-        ctx.arc(x, y, eraserSize, 0, Math.PI * 2);
+        ctx.arc(x, y, scaledEraserSize, 0, Math.PI * 2);
         ctx.clip();
 
         // Отрисовываем оригинальное изображение только в области клипа
@@ -98,24 +134,18 @@ const ImageScratchCanvas: React.FC<ImageScratchCanvasProps> = ({
 
         // Восстанавливаем состояние
         ctx.restore();
-
-        // Вычисляем процент стертой области
-    }, [eraserSize, width, height]);
+    }, [eraserSize, width, height, devicePixelRatio]);
 
     // Обработчики событий мыши
     const handleMouseDown = (e: React.MouseEvent<HTMLCanvasElement>) => {
         setIsDrawing(true);
-        const rect = e.currentTarget.getBoundingClientRect();
-        const x = e.clientX - rect.left;
-        const y = e.clientY - rect.top;
+        const { x, y } = getCoordinates(e.clientX, e.clientY);
         eraseAt(x, y);
     };
 
     const handleMouseMove = (e: React.MouseEvent<HTMLCanvasElement>) => {
         if (!isDrawing) return;
-        const rect = e.currentTarget.getBoundingClientRect();
-        const x = e.clientX - rect.left;
-        const y = e.clientY - rect.top;
+        const { x, y } = getCoordinates(e.clientX, e.clientY);
         eraseAt(x, y);
     };
 
@@ -123,30 +153,42 @@ const ImageScratchCanvas: React.FC<ImageScratchCanvasProps> = ({
         setIsDrawing(false);
     };
 
-    // Обработчики для touch-устройств
+    // Обработчики для touch-устройств (исправленные)
     const handleTouchStart = (e: React.TouchEvent<HTMLCanvasElement>) => {
         e.preventDefault();
         setIsDrawing(true);
-        const rect = e.currentTarget.getBoundingClientRect();
         const touch = e.touches[0];
-        const x = touch.clientX - rect.left;
-        const y = touch.clientY - rect.top;
+        const { x, y } = getCoordinates(touch.clientX, touch.clientY);
         eraseAt(x, y);
     };
 
     const handleTouchMove = (e: React.TouchEvent<HTMLCanvasElement>) => {
         e.preventDefault();
         if (!isDrawing) return;
-        const rect = e.currentTarget.getBoundingClientRect();
         const touch = e.touches[0];
-        const x = touch.clientX - rect.left;
-        const y = touch.clientY - rect.top;
+        const { x, y } = getCoordinates(touch.clientX, touch.clientY);
         eraseAt(x, y);
     };
 
-    const handleTouchEnd = () => {
+    const handleTouchEnd = (e: React.TouchEvent<HTMLCanvasElement>) => {
+        e.preventDefault();
         setIsDrawing(false);
     };
+
+    // Предотвращаем прокрутку при касании canvas
+    useEffect(() => {
+        const preventDefault = (e: TouchEvent) => {
+            if (e.target === canvasRef.current) {
+                e.preventDefault();
+            }
+        };
+
+        document.addEventListener('touchmove', preventDefault, { passive: false });
+
+        return () => {
+            document.removeEventListener('touchmove', preventDefault);
+        };
+    }, []);
 
     // Сброс к исходному состоянию
     const handleReset = () => {
@@ -173,7 +215,7 @@ const ImageScratchCanvas: React.FC<ImageScratchCanvasProps> = ({
                 </div>
             </div>
 
-            <div className="canvas-wrapper ">
+            <div className="canvas-wrapper" ref={containerRef}>
                 {!isLoaded && (
                     <div className="loading">Загрузка изображения...</div>
                 )}
@@ -181,8 +223,6 @@ const ImageScratchCanvas: React.FC<ImageScratchCanvasProps> = ({
                 <canvas
                     ref={canvasRef}
                     className="scratch-canvas"
-                    width={width}
-                    height={height}
                     onMouseDown={handleMouseDown}
                     onMouseMove={handleMouseMove}
                     onMouseUp={handleMouseUp}
@@ -190,7 +230,14 @@ const ImageScratchCanvas: React.FC<ImageScratchCanvasProps> = ({
                     onTouchStart={handleTouchStart}
                     onTouchMove={handleTouchMove}
                     onTouchEnd={handleTouchEnd}
-                    style={{ cursor: isDrawing ? 'crosshair' : 'default' }}
+                    onTouchCancel={handleTouchEnd}
+                    style={{
+                        cursor: isDrawing ? 'crosshair' : 'default',
+                        touchAction: 'none', // Предотвращаем жесты браузера
+                        userSelect: 'none',
+                        WebkitUserSelect: 'none',
+                        WebkitTouchCallout: 'none'
+                    }}
                 />
             </div>
         </div>
