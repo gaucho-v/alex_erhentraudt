@@ -197,4 +197,101 @@ export const QUIZ_LIST: Partial<QuizList> = [{
             { label: '', image: 'https://basket-30.wbbasket.ru/vol5839/part583957/583957902/images/c516x688/1.webp' },
         ]
     }
+}, {
+    id: 13,
+    question: {
+        id: 13,
+        label: 'Бытовой вопрос',
+        title: 'Где будешь хранить продукты?',
+    },
+    answer: {
+        id: 12,
+        options: [
+            { label: '', image: 'https://encrypted-tbn0.gstatic.com/images?q=tbn:ANd9GcQktwbIzv3M36wWosmq5k0up9PwNgGGws9zuA&s' },
+            { label: '', image: 'https://nashaotdelka.ru/wp-content/uploads/fmg5dc47f3c4155d5.jpg', isCorrect: true },
+            { label: '', image: 'https://exporenta.ru/upload/iblock/4b8/4b8ccb0deac1eb3edcd2b56d56f94440.jpg' },
+            { label: '', image: 'https://holodtrades.ru/image/cache/catalog/Shkafy%20holodilnye/Bitovie/Haier%20MSR115/32637e67_4cff_11ec_940d_9440c9efd392_32637e69_4cff_11ec_940d_9440c9efd392-1000x1000.jpeg' },
+        ]
+    }
+}, {
+    id: 14,
+    question: {
+        id: 14,
+        label: 'Дорохе + дора',
+        title: 'Как зовут героиню слева?',
+        imageClassName: "Question_Image_Dorohedoro",
+    },
+    answer: {
+        id: 14,
+        options: [
+            { label: 'Никайдо', isCorrect: true },
+            { label: 'Ной', },
+            { label: 'Эбису', },
+            { label: 'Рёзе', },
+        ]
+    }
+}, {
+    id: 15,
+    question: {
+        id: 15,
+        label: 'Выбираем анимешку',
+        title: 'Что смотрим в 2026?',
+    },
+    answer: {
+        id: 15,
+        options: [
+            { label: 'Фури Кури', },
+            { label: 'FLCL', },
+            { label: 'Пираты «Чёрной лагуны»', isCorrect: true },
+            { label: 'Furi Kuri', },
+        ]
+    }
+}, {
+    id: 16,
+    question: {
+        id: 16,
+        label: 'Кочка вопрос',
+        title: 'В какой день лучше не делать Болгарские выпады?',
+    },
+    answer: {
+        id: 16,
+        options: [
+            { label: 'В любой день, у меня лапки', isCorrect: true },
+            { label: 'Вторник', },
+            { label: 'Четверг' },
+            { label: 'Суббота', },
+        ]
+    }
+}, {
+    id: 17,
+    question: {
+        id: 17,
+        label: 'Идеальный ивнинг',
+        title: 'Что купить на вечер?',
+    },
+    answer: {
+        id: 17,
+        options: [
+            { label: 'Пиво и сырок', isCorrect: true },
+            { label: 'Вино и орешки', isCorrect: true },
+            { label: 'Стекломой с семечками', isCorrect: true },
+            { label: 'На свое усмотрение, маленький', isCorrect: true },
+        ]
+    }
+}, {
+    id: 18,
+    question: {
+        id: 18,
+        label: 'Математика',
+        title: 'У Феди было 7 яблок, 2 яблока он съел, а остальные оставил на кухне. Сколько пива он возьмет на вечер?',
+    },
+    answer: {
+        id: 18,
+        options: [
+            { label: 'Да все у меня паничка от кол-ва яблок' },
+            { label: 'Извини, что?' },
+            { label: 'Упоротый', isCorrect: true },
+            { label: 'Подъезжаю на нижний вход' },
+        ]
+    }
 }]

@@ -40,7 +40,7 @@ export const Feedback = ({ onNextStage, ansList }: { onNextStage: () => void, an
         <Flex className={'Question_Container'}>
             <Card className="Question_Container_Card Feedback_Container_Card" style={{ paddingTop: 0, width: '100%' }}>
                 <Typography.Title level={1} style={{...TitleStyle, textAlign: 'center'}}>
-                    Feedback
+                    Обратная связь
                 </Typography.Title>
 
                 <Form
