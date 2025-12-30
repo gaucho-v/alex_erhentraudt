@@ -20,17 +20,9 @@ const ImageScratchCanvas: React.FC<ImageScratchCanvasProps> = ({
     const [isDrawing, setIsDrawing] = useState(false);
     const [isLoaded, setIsLoaded] = useState(false);
     const eraserSize = 1;
-    const [devicePixelRatio, setDevicePixelRatio] = useState(1);
-    const [ctx, setCtx] = useState<CanvasRenderingContext2D | null>(null);
-    const [isInitialized, setIsInitialized] = useState(false);
+    const isInitializedRef = useRef(false);
 
-    // Получаем реальный pixel ratio устройства
-    useEffect(() => {
-        const dpr = window.devicePixelRatio || 1;
-        setDevicePixelRatio(dpr);
-    }, []);
-
-    // Инициализация изображения и canvas
+    // Загрузка изображения
     useEffect(() => {
         const img = new Image();
         img.crossOrigin = 'anonymous';
@@ -39,62 +31,60 @@ const ImageScratchCanvas: React.FC<ImageScratchCanvasProps> = ({
         img.onload = () => {
             imageRef.current = img;
             setIsLoaded(true);
-            initCanvas();
+            initializeCanvas();
         };
 
         img.onerror = () => {
             console.error('Failed to load image:', imageSrc);
+            setIsLoaded(false);
         };
     }, [imageSrc]);
 
-    // Инициализация canvas
-    const initCanvas = useCallback(() => {
+    // Инициализация canvas (один раз)
+    const initializeCanvas = useCallback(() => {
         const canvas = canvasRef.current;
         const image = imageRef.current;
 
-        if (!canvas || !image) return;
+        if (!canvas || !image || isInitializedRef.current) return;
 
-        const context = canvas.getContext('2d');
-        if (!context) return;
+        const dpr = window.devicePixelRatio || 1;
+        const ctx = canvas.getContext('2d');
+        if (!ctx) return;
 
-        // Устанавливаем размеры canvas с учетом DPR
-        canvas.width = width * devicePixelRatio;
-        canvas.height = height * devicePixelRatio;
-
-        // Масштабируем canvas для CSS
+        // Устанавливаем размеры
+        canvas.width = width * dpr;
+        canvas.height = height * dpr;
         canvas.style.width = `${width}px`;
         canvas.style.height = `${height}px`;
 
-        // Масштабируем контекст для Retina-дисплеев
-        context.scale(devicePixelRatio, devicePixelRatio);
+        // Масштабируем для Retina
+        ctx.scale(dpr, dpr);
 
-        setCtx(context);
-        setIsInitialized(true);
+        // Отрисовываем начальное состояние
+        drawInitialCanvas(ctx, image);
 
-        // Начальная отрисовка
-        drawOverlay(context);
-    }, [width, height, devicePixelRatio, overlayColor]);
+        isInitializedRef.current = true;
+    }, [width, height]);
 
-    // Функция отрисовки наложения
-    const drawOverlay = useCallback((context: CanvasRenderingContext2D) => {
-        const image = imageRef.current;
-        if (!image || !context) return;
+    // Отрисовка начального состояния
+    const drawInitialCanvas = useCallback((ctx: CanvasRenderingContext2D, image: HTMLImageElement) => {
+        // 1. Очищаем canvas
+        ctx.clearRect(0, 0, width, height);
 
-        // 1. Рисуем оригинальное изображение
-        context.clearRect(0, 0, width, height);
-        context.drawImage(image, 0, 0, width, height);
+        // 2. Рисуем оригинальное изображение
+        ctx.drawImage(image, 0, 0, width, height);
 
-        // 2. Применяем цветной фильтр поверх изображения
-        const imageData = context.getImageData(0, 0, width * devicePixelRatio, height * devicePixelRatio);
+        // 3. Сохраняем оригинальное изображение
+        const originalImageData = ctx.getImageData(0, 0, width, height);
+
+        // 4. Накладываем цветной фильтр
+        const imageData = ctx.getImageData(0, 0, width, height);
         const data = imageData.data;
-
-        // Парсим цвет наложения
         const colorMatch = overlayColor.match(/\d+/g);
         const [r, g, b] = colorMatch ? colorMatch.map(Number) : [0, 0, 0];
         const overlayOpacity = 1;
 
         for (let i = 0; i < data.length; i += 4) {
-            // Смешиваем оригинальный цвет с цветом наложения
             const originalR = data[i];
             const originalG = data[i + 1];
             const originalB = data[i + 2];
@@ -104,112 +94,121 @@ const ImageScratchCanvas: React.FC<ImageScratchCanvasProps> = ({
             data[i + 2] = Math.round(originalB * (1 - overlayOpacity) + b * overlayOpacity);
         }
 
-        context.putImageData(imageData, 0, 0);
-    }, [width, height, overlayColor, devicePixelRatio]);
+        ctx.putImageData(imageData, 0, 0);
 
-    // Функция для получения точных координат
+        // Сохраняем оригинальные данные для стирания
+        (ctx as any).originalImageData = originalImageData;
+    }, [width, height, overlayColor]);
+
+    // Получение координат
     const getCoordinates = useCallback((clientX: number, clientY: number) => {
         const canvas = canvasRef.current;
         if (!canvas) return { x: 0, y: 0 };
 
         const rect = canvas.getBoundingClientRect();
+        const dpr = window.devicePixelRatio || 1;
 
-        // Рассчитываем координаты с учетом масштаба canvas
-        const scaleX = canvas.width / rect.width;
-        const scaleY = canvas.height / rect.height;
-
-        // Для touch-устройств учитываем viewport offset
-        const x = (clientX - rect.left) * scaleX / devicePixelRatio;
-        const y = (clientY - rect.top) * scaleY / devicePixelRatio;
+        // Координаты с учетом DPR
+        const x = (clientX - rect.left) * (canvas.width / rect.width) / dpr;
+        const y = (clientY - rect.top) * (canvas.height / rect.height) / dpr;
 
         return { x, y };
-    }, [devicePixelRatio]);
+    }, []);
 
-    // Функция для стирания
+    // Стирание в точке
     const eraseAt = useCallback((x: number, y: number) => {
         const canvas = canvasRef.current;
-        const image = imageRef.current;
-        const context = ctx;
+        if (!canvas) return;
 
-        if (!canvas || !image || !context) return;
+        const ctx = canvas.getContext('2d');
+        if (!ctx) return;
+
+        const originalImageData = (ctx as any).originalImageData;
+        if (!originalImageData) return;
 
         // Сохраняем текущее состояние
-        context.save();
+        ctx.save();
 
-        // Создаем круглую область стирания
-        context.beginPath();
-        context.arc(x, y, eraserSize, 0, Math.PI * 2);
-        context.clip();
+        // Создаем область стирания
+        ctx.beginPath();
+        ctx.arc(x, y, eraserSize, 0, Math.PI * 2);
+        ctx.clip();
 
-        // Отрисовываем оригинальное изображение только в области клипа
-        context.drawImage(image, 0, 0, width, height);
+        // Восстанавливаем оригинальное изображение в этой области
+        ctx.putImageData(originalImageData, 0, 0);
 
         // Восстанавливаем состояние
-        context.restore();
-    }, [ctx, eraserSize, width, height]);
+        ctx.restore();
+    }, [eraserSize]);
 
-    // Обработчики событий мыши
-    const handleMouseDown = (e: React.MouseEvent<HTMLCanvasElement>) => {
+    // Сброс canvas
+    const handleReset = useCallback(() => {
+        const canvas = canvasRef.current;
+        const image = imageRef.current;
+
+        if (!canvas || !image) return;
+
+        const ctx = canvas.getContext('2d');
+        if (!ctx) return;
+
+        // Полностью перерисовываем canvas
+        drawInitialCanvas(ctx, image);
+    }, [drawInitialCanvas]);
+
+    // Обработчики событий
+    const handleMouseDown = useCallback((e: React.MouseEvent<HTMLCanvasElement>) => {
         e.preventDefault();
         setIsDrawing(true);
         const { x, y } = getCoordinates(e.clientX, e.clientY);
         eraseAt(x, y);
-    };
+    }, [getCoordinates, eraseAt]);
 
-    const handleMouseMove = (e: React.MouseEvent<HTMLCanvasElement>) => {
+    const handleMouseMove = useCallback((e: React.MouseEvent<HTMLCanvasElement>) => {
         e.preventDefault();
-        if (!isDrawing || !isInitialized) return;
+        if (!isDrawing) return;
         const { x, y } = getCoordinates(e.clientX, e.clientY);
         eraseAt(x, y);
-    };
+    }, [isDrawing, getCoordinates, eraseAt]);
 
-    const handleMouseUp = () => {
+    const handleMouseUp = useCallback(() => {
         setIsDrawing(false);
-    };
+    }, []);
 
-    // Обработчики для touch-устройств
-    const handleTouchStart = (e: React.TouchEvent<HTMLCanvasElement>) => {
+    const handleTouchStart = useCallback((e: React.TouchEvent<HTMLCanvasElement>) => {
         e.preventDefault();
         setIsDrawing(true);
         const touch = e.touches[0];
         const { x, y } = getCoordinates(touch.clientX, touch.clientY);
         eraseAt(x, y);
-    };
+    }, [getCoordinates, eraseAt]);
 
-    const handleTouchMove = (e: React.TouchEvent<HTMLCanvasElement>) => {
+    const handleTouchMove = useCallback((e: React.TouchEvent<HTMLCanvasElement>) => {
         e.preventDefault();
-        if (!isDrawing || !isInitialized) return;
+        if (!isDrawing) return;
         const touch = e.touches[0];
         const { x, y } = getCoordinates(touch.clientX, touch.clientY);
         eraseAt(x, y);
-    };
+    }, [isDrawing, getCoordinates, eraseAt]);
 
-    const handleTouchEnd = (e: React.TouchEvent<HTMLCanvasElement>) => {
+    const handleTouchEnd = useCallback((e: React.TouchEvent<HTMLCanvasElement>) => {
         e.preventDefault();
         setIsDrawing(false);
-    };
+    }, []);
 
-    // Предотвращаем прокрутку при касании canvas
+    // Эффект для предотвращения прокрутки
     useEffect(() => {
-        const preventDefault = (e: TouchEvent) => {
-            if (e.target === canvasRef.current) {
+        const preventScroll = (e: TouchEvent) => {
+            if (canvasRef.current && canvasRef.current.contains(e.target as Node)) {
                 e.preventDefault();
             }
         };
 
-        document.addEventListener('touchmove', preventDefault, { passive: false });
+        document.addEventListener('touchmove', preventScroll, { passive: false });
 
         return () => {
-            document.removeEventListener('touchmove', preventDefault);
+            document.removeEventListener('touchmove', preventScroll);
         };
     }, []);
-
-    // Сброс к исходному состоянию
-    const handleReset = () => {
-        if (ctx && isInitialized) {
-            drawOverlay(ctx);
-        }
-    };
 
     return (
         <div className="image-scratch-container">
