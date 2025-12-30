@@ -5,14 +5,22 @@ import {AnswerType} from "../../models/models";
 
 type AnswersProps = AnswerType & {
     onClick: () => void,
+    id: number,
+    addAnswer: (ans: string) => void,
 }
-export const Answers = ({ options, onClick }: AnswersProps) => {
+
+export const Answers = ({ options, onClick, addAnswer }: AnswersProps) => {
     const [selectedAnswer, setSelectedAnswer] = useState(null);
     const [isSubmitted, setIsSubmitted] = useState(false);
 
+
     const handleAnswerClick = (index: any) => {
         setSelectedAnswer(index);
-        setIsSubmitted(true)
+        setIsSubmitted(true);
+
+        const ans = options[index];
+        addAnswer(ans.label)
+
         setTimeout(() => {
             onClick();
             window.scrollTo({

@@ -13,7 +13,7 @@ export const PasswordGate = ({ onNextStage }: { onNextStage: () => void }) => {
             <div className={isValidAnswer ? 'PasswordGateImage PasswordGateImage-Open' : 'PasswordGateImage PasswordGateImage-Close'}/>
             <div className={'PasswordGateImage PasswordGateImage-Bug'}/>
             <Flex className={'PasswordGateGroup'}>
-                <Input name='ans' placeholder="Введите пароль" className={'PasswordGateInput'} onChange={(e) => {
+                <Input autoComplete='off' name='ans' placeholder="Введите пароль" className={'PasswordGateInput'} onChange={(e) => {
                     setValue(e.target.value)
                 }}/>
                 {

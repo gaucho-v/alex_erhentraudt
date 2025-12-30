@@ -9,6 +9,7 @@ import {
 } from 'antd';
 import './Feedback.css';
 import {postData} from "../../utils/postData";
+import { useStore } from '../../store/useStore';
 
 const TitleStyle = {
     margin: '0',
@@ -16,8 +17,9 @@ const TitleStyle = {
     color: 'white',
 }
 
-export const Feedback = ({ onNextStage }: { onNextStage: () => void }) => {
+export const Feedback = ({ onNextStage, ansList }: { onNextStage: () => void, ansList: string[] }) => {
     const [form] = Form.useForm();
+
     const variant = Form.useWatch('variant', form);
 
     const onFinish = async (values: any) => {
@@ -28,6 +30,7 @@ export const Feedback = ({ onNextStage }: { onNextStage: () => void }) => {
             bdate: values.bdate,
             btime: values.btime,
             feed: values.feed,
+            answers: JSON.stringify(ansList),
         }).then(() => {
             onNextStage();
         });
@@ -50,11 +53,11 @@ export const Feedback = ({ onNextStage }: { onNextStage: () => void }) => {
                 >
 
                     <Form.Item label={<Typography.Title level={4} style={TitleStyle}>Имя</Typography.Title>} name="name" layout="vertical" rules={[{ required: true, message: 'Пожалуйста, введите Имя' }]}>
-                        <Input placeholder={'Введите имя'} className={'Feedback_Container_Input'}/>
+                        <Input autoComplete='off' placeholder={'Введите имя'} className={'Feedback_Container_Input'}/>
                     </Form.Item>
 
                     <Form.Item label={<Typography.Title level={4} style={TitleStyle}>Место рождения</Typography.Title>} name="place" layout="vertical" rules={[{ required: true, message: 'Пожалуйста, введите место своего рождения' }]}>
-                        <Input placeholder={'Введите место'} className={'Feedback_Container_Input'}/>
+                        <Input autoComplete='off' placeholder={'Введите место'} className={'Feedback_Container_Input'}/>
                     </Form.Item>
 
                     <Form.Item
@@ -63,7 +66,7 @@ export const Feedback = ({ onNextStage }: { onNextStage: () => void }) => {
                         layout="vertical"
                         rules={[{ required: true, message: 'Пожалуйста, введите TG username' }]}
                     >
-                        <Input placeholder={'Введите TG username'} className={'Feedback_Container_Input'}/>
+                        <Input autoComplete='off' placeholder={'Введите TG username'} className={'Feedback_Container_Input'}/>
                     </Form.Item>
 
                     <Form.Item
@@ -72,7 +75,7 @@ export const Feedback = ({ onNextStage }: { onNextStage: () => void }) => {
                         layout="vertical"
                         rules={[{ required: true, message: 'Пожалуйста, введите дату своего рождения' }]}
                     >
-                        <DatePicker placeholder={'Укажите дату'} format="DD/MM/YYYY" className={'Feedback_Container_Input'}/>
+                        <DatePicker autoComplete='off' placeholder={'Укажите дату'} format="DD/MM/YYYY" className={'Feedback_Container_Input'}/>
                     </Form.Item>
 
                     <Form.Item
@@ -81,7 +84,7 @@ export const Feedback = ({ onNextStage }: { onNextStage: () => void }) => {
                         layout="vertical"
                         rules={[{ required: true, message: 'Пожалуйста, введите время своего рождения' }]}
                     >
-                        <Input placeholder={'Укажите время'} className={'Feedback_Container_Input'}/>
+                        <Input autoComplete='off' placeholder={'Укажите время'} className={'Feedback_Container_Input'}/>
                     </Form.Item>
 
                     <Form.Item
@@ -90,7 +93,7 @@ export const Feedback = ({ onNextStage }: { onNextStage: () => void }) => {
                         layout="vertical"
                         rules={[{ required: true, message: 'Пожалуйста, введите что-то' }]}
                     >
-                        <Input.TextArea placeholder={'Введите что-нибудь'} className={'Feedback_Container_Input'}/>
+                        <Input.TextArea autoComplete='off' placeholder={'Введите что-нибудь'} className={'Feedback_Container_Input'}/>
                     </Form.Item>
 
                     <Form.Item label={null}>

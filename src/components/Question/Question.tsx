@@ -9,7 +9,7 @@ type QuestionProps = {
     onBack: () => void;
     questionsCount: number;
 }
-export const Question = ({ title, id, imageClassName, onBack, questionsCount, label, link }: QuestionType & QuestionProps) => {
+export const Question = ({ title, id, imageClassName, questionsCount, label, link }: QuestionType & QuestionProps) => {
     return (
         <Flex className={'Question_Container'}>
             <Card className="Question_Container_Card" style={{ paddingTop: 0 }}>

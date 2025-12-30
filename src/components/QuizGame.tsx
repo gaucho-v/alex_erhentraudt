@@ -3,8 +3,8 @@ import {Answers} from "./Answers/Answers";
 import React, {useState} from "react";
 import {QUIZ_LIST} from "../constants/constants";
 
-export const QuizGame = ({ onNextStage }: { onNextStage: () => void }) => {
-    const [stageId, setStateId] = useState(0);
+export const QuizGame = ({ onNextStage, addAnswer }: { onNextStage: () => void, addAnswer: (ans: string) => void }) => {
+    const [stageId, setStateId] = useState(9);
     const currentQuizItem = QUIZ_LIST[stageId];
 
     const handleSubmit = () => {
@@ -38,6 +38,7 @@ export const QuizGame = ({ onNextStage }: { onNextStage: () => void }) => {
                         questionsCount={QUIZ_LIST.length}
                     />
                     <Answers
+                        addAnswer={addAnswer}
                         id={stageId}
                         options={currentQuizItem?.answer.options}
                         onClick={handleSubmit}
