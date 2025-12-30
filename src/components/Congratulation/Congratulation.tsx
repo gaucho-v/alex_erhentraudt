@@ -75,12 +75,14 @@ export const Congratulation = () => {
                                 padding: '40px 20px',
                                 textAlign: 'center',
                                 position: 'relative',
-                                overflow: 'hidden'
+                                overflow: 'hidden',
+                                width: 'initial',
                             }} className={'Question_Container_Card'}>
                                 <Title level={2} style={{
                                     color: 'white',
                                     margin: 0,
-                                    textShadow: '2px 2px 4px rgba(0,0,0,0.2)'
+                                    textShadow: '2px 2px 4px rgba(0,0,0,0.2)',
+                                    fontWeight: 'bold',
                                 }}>
                                     🎄 С Новым Годом, Саша! 🎄
                                 </Title>
@@ -103,7 +105,7 @@ export const Congratulation = () => {
                                         fontSize: line ? '1.2rem' : '1rem',
                                         margin: '8px 0',
                                         color: line ? '#1a237e' : 'transparent',
-                                        fontWeight: line ? 500 : 'normal',
+                                        fontWeight: 'normal',
                                         lineHeight: 1.8
                                     }}
                                 >
@@ -164,7 +166,7 @@ export const Congratulation = () => {
                             </Text>
                             <div>
                                 <Text type="secondary">
-                                    На этом QUIZ No Soju No Chill заканчивается
+                                    На этом QUIZ No Soju No Chill заканчивается...
                                 </Text>
                             </div>
                         </div>

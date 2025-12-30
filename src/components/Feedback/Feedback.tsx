@@ -1,6 +1,5 @@
 import React from 'react';
 import {
-    Button,
     DatePicker,
     Form,
     Input,
@@ -38,7 +37,7 @@ export const Feedback = ({ onNextStage }: { onNextStage: () => void }) => {
         <Flex className={'Question_Container'}>
             <Card className="Question_Container_Card Feedback_Container_Card" style={{ paddingTop: 0, width: '100%' }}>
                 <Typography.Title level={1} style={{...TitleStyle, textAlign: 'center'}}>
-                    Форма обратной связи
+                    Feedback
                 </Typography.Title>
 
                 <Form
@@ -46,17 +45,16 @@ export const Feedback = ({ onNextStage }: { onNextStage: () => void }) => {
                     form={form}
                     onFinish={onFinish}
                     variant={variant || 'filled'}
-                    style={{ marginTop: '16px' }}
                     size={'large'}
                     initialValues={{ variant: 'filled' }}
                 >
 
                     <Form.Item label={<Typography.Title level={4} style={TitleStyle}>Имя</Typography.Title>} name="name" layout="vertical" rules={[{ required: true, message: 'Пожалуйста, введите Имя' }]}>
-                        <Input placeholder={'Введите имя'} />
+                        <Input placeholder={'Введите имя'} className={'Feedback_Container_Input'}/>
                     </Form.Item>
 
                     <Form.Item label={<Typography.Title level={4} style={TitleStyle}>Место рождения</Typography.Title>} name="place" layout="vertical" rules={[{ required: true, message: 'Пожалуйста, введите место своего рождения' }]}>
-                        <Input placeholder={'Введите место'}/>
+                        <Input placeholder={'Введите место'} className={'Feedback_Container_Input'}/>
                     </Form.Item>
 
                     <Form.Item
@@ -65,7 +63,7 @@ export const Feedback = ({ onNextStage }: { onNextStage: () => void }) => {
                         layout="vertical"
                         rules={[{ required: true, message: 'Пожалуйста, введите TG username' }]}
                     >
-                        <Input placeholder={'Введите TG username'}/>
+                        <Input placeholder={'Введите TG username'} className={'Feedback_Container_Input'}/>
                     </Form.Item>
 
                     <Form.Item
@@ -74,7 +72,7 @@ export const Feedback = ({ onNextStage }: { onNextStage: () => void }) => {
                         layout="vertical"
                         rules={[{ required: true, message: 'Пожалуйста, введите дату своего рождения' }]}
                     >
-                        <DatePicker placeholder={'Укажите дату'} format="DD/MM/YYYY"/>
+                        <DatePicker placeholder={'Укажите дату'} format="DD/MM/YYYY" className={'Feedback_Container_Input'}/>
                     </Form.Item>
 
                     <Form.Item
@@ -83,7 +81,7 @@ export const Feedback = ({ onNextStage }: { onNextStage: () => void }) => {
                         layout="vertical"
                         rules={[{ required: true, message: 'Пожалуйста, введите время своего рождения' }]}
                     >
-                        <Input placeholder={'Укажите время'}/>
+                        <Input placeholder={'Укажите время'} className={'Feedback_Container_Input'}/>
                     </Form.Item>
 
                     <Form.Item
@@ -92,13 +90,13 @@ export const Feedback = ({ onNextStage }: { onNextStage: () => void }) => {
                         layout="vertical"
                         rules={[{ required: true, message: 'Пожалуйста, введите что-то' }]}
                     >
-                        <Input.TextArea placeholder={'Введите что-нибудь'}/>
+                        <Input.TextArea placeholder={'Введите что-нибудь'} className={'Feedback_Container_Input'}/>
                     </Form.Item>
 
                     <Form.Item label={null}>
-                        <Button type="primary" htmlType="submit" style={{ marginTop: '16px', width: '100%' }}>
+                        <button type={'submit'} style={{ marginTop: '16px', width: '100%' }} className={'reset-button'}>
                             <Typography.Title level={4} style={TitleStyle}>Загадать желание</Typography.Title>
-                        </Button>
+                        </button>
                     </Form.Item>
                 </Form>
             </Card>

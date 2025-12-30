@@ -115,7 +115,25 @@
 
 .scratch-canvas {
     touch-action: none;
+    /* Отключаем выделение и копирование */
+    user-select: none;
+    -webkit-user-select: none;
+    -moz-user-select: none;
+    -ms-user-select: none;
+
+    /* Отключаем действия по умолчанию */
+    -webkit-touch-callout: none;
+    -webkit-tap-highlight-color: transparent;
+
+    /* Фиксируем размеры */
     display: block;
     max-width: 100%;
     height: auto;
+}
+
+/* Блокируем прокрутку на родительском элементе */
+.scratch-canvas-container {
+    overflow: hidden;
+    touch-action: none;
+    position: relative;
 }

@@ -6,7 +6,7 @@ import './PasswordGate.css'
 const secret = 'Jeremy'
 export const PasswordGate = ({ onNextStage }: { onNextStage: () => void }) => {
     const [value, setValue] = useState('');
-    const isValidAnswer = value.toLowerCase() === secret.toLowerCase()
+    const isValidAnswer = value.toLowerCase().trim() === secret.toLowerCase().trim();
 
     return (
         <Flex className={'PasswordGateImage-Container'}>

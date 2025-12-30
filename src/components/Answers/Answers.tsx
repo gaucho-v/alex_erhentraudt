@@ -6,7 +6,7 @@ import {AnswerType} from "../../models/models";
 type AnswersProps = AnswerType & {
     onClick: () => void,
 }
-export const Answers = ({ id, options, onClick }: AnswersProps) => {
+export const Answers = ({ options, onClick }: AnswersProps) => {
     const [selectedAnswer, setSelectedAnswer] = useState(null);
     const [isSubmitted, setIsSubmitted] = useState(false);
 
@@ -15,6 +15,10 @@ export const Answers = ({ id, options, onClick }: AnswersProps) => {
         setIsSubmitted(true)
         setTimeout(() => {
             onClick();
+            window.scrollTo({
+                top: 0,
+                behavior: "smooth"
+            })
             setSelectedAnswer(null);
             setIsSubmitted(false)
         }, 1000)

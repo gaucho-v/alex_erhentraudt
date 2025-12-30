@@ -14,7 +14,6 @@ export const Question = ({ title, id, imageClassName, onBack, questionsCount, la
         <Flex className={'Question_Container'}>
             <Card className="Question_Container_Card" style={{ paddingTop: 0 }}>
                 <div className="question-content">
-                    <Button type={'text'} onClick={onBack} style={{ color: 'white', margin: 0, textShadow: '0 2px 10px rgba(0, 0, 0, 0.7)', fontSize: '24px', padding: 0, paddingBottom: '16px' }}>Назад</Button>
                     <Space size="middle" style={{ width: '100%' }} orientation={'vertical'}>
                         <div className="Question_Header">
                             <Title level={2} className='Question_Container_Card_Text' style={{ textAlign: 'left' }}>

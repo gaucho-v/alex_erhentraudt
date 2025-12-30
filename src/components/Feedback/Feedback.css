@@ -1,3 +1,16 @@
 .Feedback_Container_Card {
-    gap: 16px,
+    gap: 16px
+}
+
+.Feedback_Container_Input {
+    -webkit-box-shadow: 4px 4px 8px 0px rgba(255, 255, 255, 0.22);
+    -moz-box-shadow: 4px 4px 8px 0px rgba(255, 255, 255, 0.22);
+    box-shadow: 4px 4px 8px 0px rgba(255, 255, 255, 0.22);
+
+    background: whitesmoke;
+}
+
+.Feedback_Container_Input:hover {
+
+    background: white;
 }

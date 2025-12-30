@@ -173,7 +173,7 @@ const ImageScratchCanvas: React.FC<ImageScratchCanvasProps> = ({
                 </div>
             </div>
 
-            <div className="canvas-wrapper">
+            <div className="canvas-wrapper ">
                 {!isLoaded && (
                     <div className="loading">Загрузка изображения...</div>
                 )}

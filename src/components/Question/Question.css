@@ -52,7 +52,6 @@
     border-radius: 28px; /* На 4px больше основного радиуса */
     z-index: -1;
     animation: gradientBorder 8s ease infinite;
-    filter: blur(2px);
     opacity: 0.9;
 }
 
