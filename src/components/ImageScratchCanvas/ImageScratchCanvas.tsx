@@ -16,12 +16,13 @@ const ImageScratchCanvas: React.FC<ImageScratchCanvasProps> = ({
                                                                    overlayColor = 'rgb(0,0,0)',
                                                                }) => {
     const canvasRef = useRef<HTMLCanvasElement>(null);
-    const containerRef = useRef<HTMLDivElement>(null);
     const imageRef = useRef<HTMLImageElement>(null);
     const [isDrawing, setIsDrawing] = useState(false);
     const [isLoaded, setIsLoaded] = useState(false);
-    const eraserSize = 2;
+    const eraserSize = 1;
     const [devicePixelRatio, setDevicePixelRatio] = useState(1);
+    const [ctx, setCtx] = useState<CanvasRenderingContext2D | null>(null);
+    const [isInitialized, setIsInitialized] = useState(false);
 
     // Получаем реальный pixel ratio устройства
     useEffect(() => {
@@ -29,48 +30,32 @@ const ImageScratchCanvas: React.FC<ImageScratchCanvasProps> = ({
         setDevicePixelRatio(dpr);
     }, []);
 
-    // Инициализация изображения
+    // Инициализация изображения и canvas
     useEffect(() => {
         const img = new Image();
         img.crossOrigin = 'anonymous';
         img.src = imageSrc;
+
         img.onload = () => {
             imageRef.current = img;
             setIsLoaded(true);
-            drawCanvas();
+            initCanvas();
         };
+
         img.onerror = () => {
             console.error('Failed to load image:', imageSrc);
         };
     }, [imageSrc]);
 
-    // Функция для получения точных координат
-    const getCoordinates = useCallback((clientX: number, clientY: number) => {
-        const canvas = canvasRef.current;
-        if (!canvas) return { x: 0, y: 0 };
-
-        const rect = canvas.getBoundingClientRect();
-
-        // Рассчитываем координаты с учетом масштаба canvas
-        const scaleX = canvas.width / rect.width;
-        const scaleY = canvas.height / rect.height;
-
-        // Для touch-устройств учитываем viewport offset
-        const x = (clientX - rect.left) * scaleX;
-        const y = (clientY - rect.top) * scaleY;
-
-        return { x, y };
-    }, []);
-
-    // Основная функция отрисовки с учетом DPR
-    const drawCanvas = useCallback(() => {
+    // Инициализация canvas
+    const initCanvas = useCallback(() => {
         const canvas = canvasRef.current;
         const image = imageRef.current;
 
         if (!canvas || !image) return;
 
-        const ctx = canvas.getContext('2d');
-        if (!ctx) return;
+        const context = canvas.getContext('2d');
+        if (!context) return;
 
         // Устанавливаем размеры canvas с учетом DPR
         canvas.width = width * devicePixelRatio;
@@ -81,17 +66,31 @@ const ImageScratchCanvas: React.FC<ImageScratchCanvasProps> = ({
         canvas.style.height = `${height}px`;
 
         // Масштабируем контекст для Retina-дисплеев
-        ctx.scale(devicePixelRatio, devicePixelRatio);
+        context.scale(devicePixelRatio, devicePixelRatio);
+
+        setCtx(context);
+        setIsInitialized(true);
+
+        // Начальная отрисовка
+        drawOverlay(context);
+    }, [width, height, devicePixelRatio, overlayColor]);
+
+    // Функция отрисовки наложения
+    const drawOverlay = useCallback((context: CanvasRenderingContext2D) => {
+        const image = imageRef.current;
+        if (!image || !context) return;
 
         // 1. Рисуем оригинальное изображение
-        ctx.drawImage(image, 0, 0, width, height);
+        context.clearRect(0, 0, width, height);
+        context.drawImage(image, 0, 0, width, height);
 
-        // 2. Применяем серый фильтр поверх изображения
-        const imageData = ctx.getImageData(0, 0, width * devicePixelRatio, height * devicePixelRatio);
+        // 2. Применяем цветной фильтр поверх изображения
+        const imageData = context.getImageData(0, 0, width * devicePixelRatio, height * devicePixelRatio);
         const data = imageData.data;
 
-        // Преобразуем в оттенки серого с прозрачностью
-        const [r, g, b] = overlayColor.match(/\d+/g)?.map(Number) || [0, 0, 0];
+        // Парсим цвет наложения
+        const colorMatch = overlayColor.match(/\d+/g);
+        const [r, g, b] = colorMatch ? colorMatch.map(Number) : [0, 0, 0];
         const overlayOpacity = 1;
 
         for (let i = 0; i < data.length; i += 4) {
@@ -105,46 +104,61 @@ const ImageScratchCanvas: React.FC<ImageScratchCanvasProps> = ({
             data[i + 2] = Math.round(originalB * (1 - overlayOpacity) + b * overlayOpacity);
         }
 
-        ctx.putImageData(imageData, 0, 0);
+        context.putImageData(imageData, 0, 0);
     }, [width, height, overlayColor, devicePixelRatio]);
+
+    // Функция для получения точных координат
+    const getCoordinates = useCallback((clientX: number, clientY: number) => {
+        const canvas = canvasRef.current;
+        if (!canvas) return { x: 0, y: 0 };
+
+        const rect = canvas.getBoundingClientRect();
+
+        // Рассчитываем координаты с учетом масштаба canvas
+        const scaleX = canvas.width / rect.width;
+        const scaleY = canvas.height / rect.height;
+
+        // Для touch-устройств учитываем viewport offset
+        const x = (clientX - rect.left) * scaleX / devicePixelRatio;
+        const y = (clientY - rect.top) * scaleY / devicePixelRatio;
+
+        return { x, y };
+    }, [devicePixelRatio]);
 
     // Функция для стирания
     const eraseAt = useCallback((x: number, y: number) => {
         const canvas = canvasRef.current;
         const image = imageRef.current;
+        const context = ctx;
 
-        if (!canvas || !image) return;
-
-        const ctx = canvas.getContext('2d');
-        if (!ctx) return;
+        if (!canvas || !image || !context) return;
 
         // Сохраняем текущее состояние
-        ctx.save();
-
-        // Адаптируем размер ластика под DPR
-        const scaledEraserSize = eraserSize * devicePixelRatio;
+        context.save();
 
         // Создаем круглую область стирания
-        ctx.beginPath();
-        ctx.arc(x, y, scaledEraserSize, 0, Math.PI * 2);
-        ctx.clip();
+        context.beginPath();
+        context.arc(x, y, eraserSize, 0, Math.PI * 2);
+        context.clip();
 
         // Отрисовываем оригинальное изображение только в области клипа
-        ctx.drawImage(image, 0, 0, width, height);
+        context.drawImage(image, 0, 0, width, height);
 
         // Восстанавливаем состояние
-        ctx.restore();
-    }, [eraserSize, width, height, devicePixelRatio]);
+        context.restore();
+    }, [ctx, eraserSize, width, height]);
 
     // Обработчики событий мыши
     const handleMouseDown = (e: React.MouseEvent<HTMLCanvasElement>) => {
+        e.preventDefault();
         setIsDrawing(true);
         const { x, y } = getCoordinates(e.clientX, e.clientY);
         eraseAt(x, y);
     };
 
     const handleMouseMove = (e: React.MouseEvent<HTMLCanvasElement>) => {
-        if (!isDrawing) return;
+        e.preventDefault();
+        if (!isDrawing || !isInitialized) return;
         const { x, y } = getCoordinates(e.clientX, e.clientY);
         eraseAt(x, y);
     };
@@ -153,7 +167,7 @@ const ImageScratchCanvas: React.FC<ImageScratchCanvasProps> = ({
         setIsDrawing(false);
     };
 
-    // Обработчики для touch-устройств (исправленные)
+    // Обработчики для touch-устройств
     const handleTouchStart = (e: React.TouchEvent<HTMLCanvasElement>) => {
         e.preventDefault();
         setIsDrawing(true);
@@ -164,7 +178,7 @@ const ImageScratchCanvas: React.FC<ImageScratchCanvasProps> = ({
 
     const handleTouchMove = (e: React.TouchEvent<HTMLCanvasElement>) => {
         e.preventDefault();
-        if (!isDrawing) return;
+        if (!isDrawing || !isInitialized) return;
         const touch = e.touches[0];
         const { x, y } = getCoordinates(touch.clientX, touch.clientY);
         eraseAt(x, y);
@@ -192,7 +206,9 @@ const ImageScratchCanvas: React.FC<ImageScratchCanvasProps> = ({
 
     // Сброс к исходному состоянию
     const handleReset = () => {
-        drawCanvas();
+        if (ctx && isInitialized) {
+            drawOverlay(ctx);
+        }
     };
 
     return (
@@ -215,7 +231,7 @@ const ImageScratchCanvas: React.FC<ImageScratchCanvasProps> = ({
                 </div>
             </div>
 
-            <div className="canvas-wrapper" ref={containerRef}>
+            <div className="canvas-wrapper">
                 {!isLoaded && (
                     <div className="loading">Загрузка изображения...</div>
                 )}
@@ -233,10 +249,11 @@ const ImageScratchCanvas: React.FC<ImageScratchCanvasProps> = ({
                     onTouchCancel={handleTouchEnd}
                     style={{
                         cursor: isDrawing ? 'crosshair' : 'default',
-                        touchAction: 'none', // Предотвращаем жесты браузера
+                        touchAction: 'none',
                         userSelect: 'none',
                         WebkitUserSelect: 'none',
-                        WebkitTouchCallout: 'none'
+                        WebkitTouchCallout: 'none',
+                        display: isLoaded ? 'block' : 'none'
                     }}
                 />
             </div>
